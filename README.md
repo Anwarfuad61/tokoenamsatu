@@ -1,58 +1,32 @@
-<h1 align="center">🧥 Thrifseken</h1>
-<p align="center">
-  <strong>Toko Fashion Second Berkualitas & Hemat</strong><br>
-  <em>Website resmi: <a href="https://thrifseken.com">thrifseken.com</a></em>
-</p>
+
+3. Buka file `index.html` di browser
 
 ---
 
-## 🛍️ Tentang Thrifseken
+## 📩 Sistem Kontak
 
-**Thrifseken** adalah platform daring yang menyediakan berbagai pilihan pakaian second hand berkualitas dengan harga terjangkau. Kami menawarkan koleksi seperti:
+Form kontak menggunakan **Formspree** untuk mengirim pesan langsung ke email pemilik toko.
 
-- **Jaket Vintage**: Rp 120.000
-- **Celana Retro**: Rp 90.000
-- **Kemeja Kasual**: Rp 70.000
-
-Kami percaya bahwa tampil gaya tidak harus mahal dan mendukung gaya hidup berkelanjutan.
+WhatsApp terhubung ke nomor resmi toko untuk respon cepat.
 
 ---
 
-## 🌐 Fitur Website
+## 📞 Kontak Toko
 
-- **Navigasi Mudah**: Halaman Beranda, Produk, Tentang Kami, dan Kontak.
-- **Desain Responsif**: Tampilan yang optimal di berbagai perangkat.
-- **Informasi Produk**: Detail dan harga produk yang jelas.
-- **Kontak Langsung**: Terhubung langsung melalui WhatsApp.
-
----
-
-## 🖼️ Preview
-
-![Preview Website](https://i.postimg.cc/Hsznxgr5/THRIFSEKEN-2.png)
+📍 Kabupaten Tegal  
+📱 WhatsApp: 0895-2417-3746  
+📧 Email: (Isi email kamu)
 
 ---
 
-## 🛠️ Teknologi
+## 👨‍💻 Developer
 
-- HTML5
-- CSS3
-- JavaScript (DOM interaktif)
-- GitHub Pages (Hosting gratis)
+Dibuat dan dikembangkan oleh:
+
+**Anwar Fuad**
+
 ---
 
-📁 thrifseken/
-├── index.html
-├── produk/index.html
-├── tentang/index.html
-├── kontak/index.html
-├── style.css
-└── tsclothing.png
----
+## 📜 Lisensi
 
-🔗 Tautan Penting
-Website: https://thrifseken.com
-
-- WhatsApp: [Klik untuk Chat](https://wa.me/628xxxxx)
-- Instagram: [@thrifseken](https://instagram.com/thrifseken)
----
+Project ini dibuat untuk kebutuhan bisnis pribadi Toko Enam Satu.
