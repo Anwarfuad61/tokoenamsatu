@@ -68,11 +68,11 @@
   <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link rel="icon" href="/tko.png" type="image/png">
+  <link rel="icon" href="tko.png" type="image/png">
   
   <!-- CSS Files -->
-  <link rel="stylesheet" href="/variables.css">
-  <link rel="stylesheet" href="/header.css">
+  <link rel="stylesheet" href="variables.css">
+  <link rel="stylesheet" href="header.css">
   <link rel="stylesheet" href="produk.css">
 </head>
 
@@ -246,7 +246,7 @@ function displayProducts(products) {
             }
         } else {
             // Default image
-            imageSrc = '/img/default.jpg';
+            imageSrc = 'img/default.jpg';
         }
         
         // Tentukan kategori display name
@@ -334,7 +334,7 @@ document.addEventListener('DOMContentLoaded', loadProducts);
 
   <script>
     // Load header
-    fetch("/header.html")
+    fetch("header.html")
       .then(res => res.text())
       .then(html => {
         document.getElementById("site-header").innerHTML = html;
@@ -365,7 +365,7 @@ document.addEventListener('DOMContentLoaded', loadProducts);
   </script>
 
   <!-- Load global.js -->
-  <script src="/global.js?v=1.2"></script>
+  <script src="global.js?v=1.2"></script>
 
   <!-- Page specific scripts -->
   <script>
