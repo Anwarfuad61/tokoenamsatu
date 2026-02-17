@@ -1,0 +1,42 @@
+/* variables.css */
+:root {
+  /* Colors - Light Theme (Default) */
+  --primary: #4f46e5;
+  --accent: #22c55e;
+  --bg: #f4f6fb;
+  --text: #0f172a;
+  --muted: #64748b;
+  --card: #ffffff;
+  --border: #e5e7eb;
+  
+  /* Spacing & Radius */
+  --radius-lg: 24px;
+  --radius-md: 16px;
+  --radius-sm: 8px;
+  
+  /* Shadows */
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --shadow-medium: 0 20px 40px rgba(0, 0, 0, 0.12);
+  --shadow-large: 0 30px 60px rgba(0, 0, 0, 0.15);
+  
+  /* Transitions */
+  --transition-fast: 0.2s ease;
+  --transition-normal: 0.3s ease;
+  --transition-slow: 0.5s ease;
+}
+
+[data-theme="dark"] {
+  /* Colors - Dark Theme */
+  --primary: #6366f1;
+  --accent: #10b981;
+  --bg: #0b1020;
+  --text: #e5e7eb;
+  --muted: #9ca3af;
+  --card: #111827;
+  --border: #374151;
+  
+  /* Adjust shadows for dark mode */
+  --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.25);
+  --shadow-medium: 0 20px 40px rgba(0, 0, 0, 0.3);
+  --shadow-large: 0 30px 60px rgba(0, 0, 0, 0.35);
+}

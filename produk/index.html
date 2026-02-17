@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Store",
+    "name": "Toko Enam Satu",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Kabupaten Tegal",
+      "addressRegion": "Jawa Tengah",
+      "addressCountry": "ID"
+    },
+    "hasOfferCatalog": {
+      "@type": "OfferCatalog",
+      "name": "Produk Toko Enam Satu",
+      "itemListElement": [
+        {
+          "@type": "Product",
+          "name": "Joran Pancing Fiber",
+          "image": "https://tokoenamsatu.com/img/joran.webp",
+          "offers": {
+            "@type": "Offer",
+            "price": "85000",
+            "priceCurrency": "IDR",
+            "availability": "https://schema.org/InStock"
+          }
+        },
+        {
+          "@type": "Product",
+          "name": "Cetakan Tahu Kayu",
+          "image": "https://tokoenamsatu.com/img/cetakan-tahu.webp",
+          "offers": {
+            "@type": "Offer",
+            "price": "150000",
+            "priceCurrency": "IDR",
+            "availability": "https://schema.org/InStock"
+          }
+        },
+        {
+  "@type": "Product",
+  "name": "Layang-Layang Diamond",
+  "image": "https://tokoenamsatu.com/img/layangan.webp",
+  "offers": {
+    "@type": "Offer",
+    "price": "25000",
+    "priceCurrency": "IDR",
+    "availability": "https://schema.org/InStock"
+  }
+}
+
+      ]
+    }
+  }
+  </script>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Katalog Produk | Toko Enam Satu – Kabupaten Tegal</title>
+  
+ <meta name="description" content="Katalog produk Toko Enam Satu Kabupaten Tegal. Menyediakan alat pancing, alat pembuatan tahu, dan peralatan layang-layang berkualitas dengan harga terjangkau.">
+
+  <meta name="keywords" content="Toko Enam Satu, alat pancing tegal, alat pembuatan tahu tegal, toko alat pancing kabupaten tegal">
+  <meta name="author" content="Toko Enam Satu">
+  
+  <!-- Fonts & Icons -->
+  <link rel="stylesheet" href="https://unpkg.com/aos@2.3.4/dist/aos.css">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="icon" href="/tko.png" type="image/png">
+  
+  <!-- CSS Files -->
+  <link rel="stylesheet" href="/variables.css">
+  <link rel="stylesheet" href="/header.css">
+  <link rel="stylesheet" href="produk.css">
+</head>
+
+<body>
+  <!-- Header akan dimuat via JavaScript -->
+  <div id="site-header"></div>
+
+  <div class="main-title" data-aos="fade-up">
+    <h1>Katalog Produk Toko Enam Satu</h1>
+    <p>Alat Pancing, Alat Pembuatan Tahu & Layangan • Kabupaten Tegal</p>
+  </div>
+
+  <!-- Search Bar -->
+  <div class="search-container" data-aos="fade-up">
+    <div class="search-box">
+      <i class="fas fa-search"></i>
+      <input type="text" id="searchInput" placeholder="Cari produk...">
+    </div>
+  </div>
+
+  <!-- Category Filter -->
+  <div class="category-filter" data-aos="fade-up">
+    <button onclick="filterCategory('all')" class="active">Semua Produk</button>
+    <button onclick="filterCategory('pancing')"><i class="fas fa-fish"></i> Alat Pancing</button>
+    <button onclick="filterCategory('tahu')"><i class="fas fa-industry"></i> Alat Tahu</button>
+     <button onclick="filterCategory('layangan')"><i class="fas fa-paper-plane"></i> Layangan</button>
+  </div>
+
+  <!-- Ganti bagian products dengan ini: -->
+<section class="products" data-aos="fade-up" id="products-container">
+    <!-- Products akan di-load via JavaScript -->
+    <div class="loading" id="loading">
+        <i class="fas fa-spinner fa-spin"></i>
+        <p>Memuat produk...</p>
+    </div>
+</section>
+
+<script>
+// Google Sheets URL (GANTI DENGAN URL ANDA SENDIRI)
+const GOOGLE_SHEETS_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vQv3M0rETF_bw4sQOCmuAa4ojA7vWEFxaqkfrFUvO1xP6TraZ9tyk4hthVgkCBNu45vCw00uywHCdrM/pub?output=csv';
+
+// Function untuk load produk dari Google Sheets
+async function loadProducts() {
+    try {
+        console.log('Loading products from:', GOOGLE_SHEETS_URL);
+        const response = await fetch(GOOGLE_SHEETS_URL);
+        const csvText = await response.text();
+        
+        console.log('Raw CSV text:', csvText); // Lihat apa yang didapat
+        console.log('CSV length:', csvText.length);
+        
+        const products = parseCSV(csvText);
+        displayProducts(products);
+    } catch (error) {
+        console.error('Error loading products:', error);
+        document.getElementById('loading').innerHTML = `
+            <i class="fas fa-exclamation-triangle"></i>
+            <p>Gagal memuat produk. Silakan refresh halaman.</p>
+            <p>Error: ${error.message}</p>
+        `;
+    }
+}
+
+// Parse CSV to JSON - versi yang diperbaiki
+// Parse CSV to JSON - VERSI YANG BENAR UNTUK DATA ANDA
+function parseCSV(csvText) {
+    const lines = csvText.split('\n');
+    const headers = lines[0].split(',').map(h => h.trim());
+    
+    const products = [];
+    for (let i = 1; i < lines.length; i++) {
+        const line = lines[i].trim();
+        if (!line) continue; // Skip baris kosong
+        
+        // Parsing CSV dengan kompatibilitas untuk quoted fields
+        const values = [];
+        let currentValue = '';
+        let inQuotes = false;
+        
+        for (let j = 0; j < line.length; j++) {
+            const char = line[j];
+            
+            if (char === '"') {
+                inQuotes = !inQuotes;
+            } else if (char === ',' && !inQuotes) {
+                values.push(currentValue.trim());
+                currentValue = '';
+            } else {
+                currentValue += char;
+            }
+        }
+        values.push(currentValue.trim()); // Tambahkan nilai terakhir
+        
+        if (values.length === headers.length) {
+            const product = {};
+            headers.forEach((header, index) => {
+                product[header] = values[index];
+            });
+            
+            // Hanya tampilkan produk dengan status 'active'
+            if (product.status && product.status.toLowerCase() === 'active') {
+                // Konversi stock ke number
+                product.stock = parseInt(product.stock) || 0;
+                products.push(product);
+            }
+        }
+    }
+    
+    console.log('Parsed products:', products); // Untuk debugging
+    return products;
+}
+
+// Display products
+// Display products - versi support Google Drive
+function displayProducts(products) {
+    const container = document.getElementById('products-container');
+    const loading = document.getElementById('loading');
+    
+    if (products.length === 0) {
+        loading.innerHTML = `
+            <i class="fas fa-box-open"></i>
+            <p>Belum ada produk tersedia.</p>
+        `;
+        return;
+    }
+    
+    loading.style.display = 'none';
+    
+    let html = '';
+    products.forEach(product => {
+        // Deteksi apakah image adalah URL Google Drive atau local file
+        let imageSrc = '';
+        
+        if (product.image) {
+            // Cek jika ini URL Google Drive
+            if (product.image.includes('drive.google.com')) {
+                // Ekstrak file ID dari URL Google Drive
+                let fileId = '';
+                
+                // Coba berbagai pola ekstraksi untuk Google Drive
+                if (product.image.includes('/file/d/')) {
+                    // Format: https://drive.google.com/file/d/FILE_ID/...
+                    const match = product.image.match(/\/file\/d\/([^\/]+)/);
+                    fileId = match ? match[1] : '';
+                } else if (product.image.includes('id=')) {
+                    // Format: https://drive.google.com/uc?export=view&id=FILE_ID
+                    const match = product.image.match(/[?&]id=([^&]+)/);
+                    fileId = match ? match[1] : '';
+                } else if (product.image.includes('/d/')) {
+                    // Format: https://lh3.googleusercontent.com/d/FILE_ID
+                    const match = product.image.match(/\/d\/([^\/]+)/);
+                    fileId = match ? match[1] : '';
+                }
+                
+                if (fileId) {
+                    // Gunakan format yang berhasil
+                    imageSrc = `https://lh3.googleusercontent.com/d/${fileId}`;
+                } else {
+                    // Jika tidak bisa ekstrak file ID, gunakan URL asli
+                    imageSrc = product.image;
+                }
+            } else if (product.image.startsWith('https://') || product.image.startsWith('http://')) {
+                // URL eksternal lainnya
+                imageSrc = product.image;
+            } else if (product.image.startsWith('data:image/')) {
+                // Data URL (base64)
+                imageSrc = product.image;
+            } else {
+                // File lokal
+                imageSrc = `/img/${product.image}`;
+            }
+        } else {
+            // Default image
+            imageSrc = '/img/default.jpg';
+        }
+        
+        // Tentukan kategori display name
+        let categoryName = 'Produk';
+        if (product.category === 'pancing') {
+            categoryName = 'Alat Pancing';
+        } else if (product.category === 'tahu') {
+            categoryName = 'Alat Tahu';
+        }  else if (product.category === 'layangan') {
+    categoryName = 'Peralatan Layang-Layang';
+}        
+        else {
+            // Coba cari nama kategori dari list kategori
+            const categories = JSON.parse(localStorage.getItem('categories') || '[]');
+            const categoryObj = categories.find(cat => cat.slug === product.category);
+            if (categoryObj) {
+                categoryName = categoryObj.name;
+            }
+        }
+        
+        html += `
+            <div class="product-card" data-category="${product.category}">
+                <div class="product-image">
+                    <img src="${imageSrc}" alt="${product.name}" loading="lazy" 
+                         onerror="this.onerror=null; this.src='/img/default.jpg';">
+                    <span class="product-category">${categoryName}</span>
+                </div>
+                <div class="product-info">
+                    <h3>${product.name}</h3>
+                    <p class="product-desc">${product.description || ''}</p>
+                    <div class="product-price">
+                        <span class="price">Rp ${parseInt(product.price).toLocaleString('id-ID')}</span>
+                        <span class="stock">
+                            <i class="fas fa-${product.stock > 0 ? 'check-circle' : 'times-circle'}"></i>
+                            ${product.stock > 0 ? 'Tersedia' : 'Habis'}
+                        </span>
+                    </div>
+                    <div class="product-actions">
+                        <a class="buy-button" href="https://wa.me/6289524173746?text=Halo,%20saya%20tertarik%20dengan%20${encodeURIComponent(product.name)}%20${encodeURIComponent('(Lihat produk: ' + window.location.origin + ')')}">
+                            <i class="fab fa-whatsapp"></i> Pesan via WhatsApp
+                        </a>
+                        <a class="shopee-button" href="https://shopee.co.id/tokoenamsatu" target="_blank">
+                            <i class="fab fa-shopify"></i> Beli di Shopee
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    
+    container.innerHTML += html;
+}
+
+// Load products on page load
+document.addEventListener('DOMContentLoaded', loadProducts);
+</script>
+
+  <!-- WhatsApp CTA -->
+  <div class="whatsapp-cta" data-aos="zoom-in">
+    <div class="cta-content">
+      <i class="fab fa-whatsapp"></i>
+      <h3>Butuh Bantuan Memilih Produk?</h3>
+      <p>Tim kami siap membantu Anda memilih produk yang tepat sesuai kebutuhan.</p>
+      <a href="https://wa.me/6289524173746" class="cta-button">
+        <i class="fab fa-whatsapp"></i> Chat Sekarang
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-content">
+      <p>&copy; 2026 Toko Enam Satu • Kabupaten Tegal</p>
+      <p class="footer-contact">
+        <i class="fas fa-phone"></i> 0895-2417-3746 | 
+        <i class="fas fa-map-marker-alt"></i> Kabupaten Tegal, Jawa Tengah
+      </p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@2.3.4/dist/aos.js"></script>
+  <script>
+    AOS.init({ duration: 800, once: true });
+  </script>
+
+  <script>
+    // Load header
+    fetch("/header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("site-header").innerHTML = html;
+        console.log('Header loaded for produk page');
+        
+        // Load saved theme
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        
+        // Initialize after a short delay
+        setTimeout(() => {
+          if (typeof init === 'function') {
+            init();
+          }
+        }, 100);
+      })
+      .catch(err => {
+        console.error('Error loading header:', err);
+        document.getElementById("site-header").innerHTML = `
+          <header class="header">
+            <div class="logo">
+              <a href="/"><img src="/tko.png" alt="Logo" height="40"></a>
+            </div>
+            <button class="hamburger">☰</button>
+          </header>
+        `;
+      });
+  </script>
+
+  <!-- Load global.js -->
+  <script src="/global.js?v=1.2"></script>
+
+  <!-- Page specific scripts -->
+  <script>
+    // Search functionality
+    document.getElementById("searchInput")?.addEventListener("input", function() {
+      const keyword = this.value.toLowerCase().trim();
+      const productCards = document.querySelectorAll(".product-card");
+      
+      productCards.forEach(card => {
+        const title = card.querySelector("h3").textContent.toLowerCase();
+        const desc = card.querySelector(".product-desc").textContent.toLowerCase();
+        const category = card.querySelector(".product-category").textContent.toLowerCase();
+        
+        if (keyword === "" || title.includes(keyword) || desc.includes(keyword) || category.includes(keyword)) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+    });
+
+    // Filter category
+    function filterCategory(category) {
+      const productCards = document.querySelectorAll(".product-card");
+      const filterButtons = document.querySelectorAll(".category-filter button");
+      
+      // Update active button
+      filterButtons.forEach(btn => {
+        btn.classList.remove("active");
+      });
+      event.target.classList.add("active");
+      
+      // Filter products
+      productCards.forEach(card => {
+        if (category === "all" || card.dataset.category === category) {
+          card.style.display = "block";
+        } else {
+          card.style.display = "none";
+        }
+      });
+      
+      // Reset search
+      document.getElementById("searchInput").value = "";
+    }
+
+    // Set active navigation
+    function setActiveNav() {
+      const navLinks = document.querySelectorAll('.nav-desktop a, .mobile-menu a');
+      navLinks.forEach(link => {
+        if (link.getAttribute('href') === '/produk') {
+          link.classList.add('active');
+        } else {
+          link.classList.remove('active');
+        }
+      });
+    }
+
+    // Call setActiveNav after page loads
+    setTimeout(setActiveNav, 200);
+  </script>
+</body>
+</html>

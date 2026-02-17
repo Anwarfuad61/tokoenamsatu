@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Toko Enam Satu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: #f5f7fa; padding: 20px; }
+        .container { max-width: 1100px; margin: 0 auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 5px 20px rgba(0,0,0,0.1); }
+        h1 { color: #4f46e5; margin-bottom: 30px; text-align: center; }
+        
+        .tabs { display: flex; margin-bottom: 30px; border-bottom: 2px solid #e5e7eb; flex-wrap: wrap; }
+        .tab { padding: 12px 24px; cursor: pointer; font-weight: 600; color: #6b7280; border-bottom: 3px solid transparent; }
+        .tab.active { color: #4f46e5; border-bottom-color: #4f46e5; }
+        
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 8px; font-weight: 600; color: #333; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e5e7eb; border-radius: 8px; font-size: 16px; transition: border 0.3s; }
+        input:focus, select:focus, textarea:focus { border-color: #4f46e5; outline: none; }
+        textarea { min-height: 100px; resize: vertical; }
+        
+        .btn { background: #4f46e5; color: white; border: none; padding: 12px 24px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-right: 10px; margin-bottom: 10px; }
+        .btn:hover { background: #4338ca; }
+        .btn:disabled { background: #9ca3af; cursor: not-allowed; }
+        .btn-success { background: #10b981; }
+        .btn-success:hover { background: #0da271; }
+        .btn-secondary { background: #6b7280; }
+        .btn-secondary:hover { background: #4b5563; }
+        .btn-warning { background: #f59e0b; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-info { background: #3b82f6; }
+        .btn-info:hover { background: #2563eb; }
+        
+        .message { padding: 15px; border-radius: 8px; margin: 20px 0; display: none; }
+        .success { background: #10b981; color: white; }
+        .error { background: #ef4444; color: white; }
+        .loading { background: #3b82f6; color: white; }
+        .info { background: #8b5cf6; color: white; }
+        
+        .progress-bar { height: 4px; background: #e5e7eb; border-radius: 2px; margin: 10px 0; overflow: hidden; }
+        .progress { height: 100%; background: #10b981; width: 0%; transition: width 0.3s; }
+        
+        .api-status { 
+            background: #f3f4f6; 
+            padding: 15px; 
+            border-radius: 8px; 
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-connected { background: #10b981; }
+        .status-disconnected { background: #ef4444; }
+        .status-connecting { background: #f59e0b; }
+        
+        .instructions { background: #f3f4f6; padding: 20px; border-radius: 10px; margin-top: 30px; }
+        .instructions h3 { color: #4f46e5; margin-bottom: 10px; }
+        
+        .log-container { 
+            max-height: 200px; 
+            overflow-y: auto; 
+            background: #1f2937; 
+            color: #d1d5db; 
+            padding: 15px; 
+            border-radius: 8px; 
+            font-family: monospace; 
+            font-size: 14px; 
+            margin-top: 20px; 
+        }
+        .log-entry { margin-bottom: 5px; }
+        .log-time { color: #9ca3af; }
+        .log-success { color: #10b981; }
+        .log-error { color: #ef4444; }
+        .log-info { color: #3b82f6; }
+        .log-warning { color: #f59e0b; }
+        
+        /* Upload Image Styles */
+        .upload-section { margin-bottom: 30px; }
+        .upload-options { 
+            display: flex; 
+            gap: 15px; 
+            flex-wrap: wrap; 
+            margin-bottom: 20px; 
+        }
+        
+        .upload-area { 
+            border: 3px dashed #cbd5e1; 
+            border-radius: 12px; 
+            padding: 40px 20px; 
+            text-align: center; 
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+        }
+        .upload-area:hover { 
+            border-color: #4f46e5; 
+            background: #f8fafc; 
+        }
+        .upload-area.dragover { 
+            border-color: #10b981; 
+            background: #f0fdf4; 
+        }
+        .upload-icon { 
+            font-size: 48px; 
+            color: #9ca3af; 
+            margin-bottom: 15px; 
+        }
+        .upload-text h3 { margin-bottom: 8px; color: #374151; }
+        .upload-text p { color: #6b7280; font-size: 14px; }
+        
+        .image-preview { 
+            display: none; 
+            max-width: 300px; 
+            margin: 20px auto; 
+            position: relative; 
+        }
+        .image-preview img { 
+            width: 100%; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1); 
+        }
+        .remove-btn { 
+            position: absolute; 
+            top: -10px; 
+            right: -10px; 
+            background: #ef4444; 
+            color: white; 
+            border-radius: 50%; 
+            width: 30px; 
+            height: 30px; 
+            border: none; 
+            cursor: pointer; 
+            font-size: 16px; 
+        }
+        
+        .camera-container { 
+            display: none; 
+            margin-top: 20px; 
+            text-align: center; 
+        }
+        #cameraVideo { 
+            width: 100%; 
+            max-width: 400px; 
+            border-radius: 10px; 
+            margin: 15px auto; 
+            display: block; 
+            background: #000;
+        }
+        .camera-controls { margin: 20px 0; }
+        
+        .gallery-container {
+            display: none;
+            margin-top: 20px;
+        }
+        .image-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .image-item {
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            overflow: hidden;
+            padding: 10px;
+            text-align: center;
+        }
+        .image-thumbnail {
+            width: 100%;
+            height: 100px;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+        .image-thumbnail img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        .image-thumbnail i {
+            font-size: 36px;
+            color: #9ca3af;
+        }
+        .image-info {
+            font-size: 12px;
+            color: #374151;
+        }
+        
+        .category-management {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .category-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        .category-tag {
+            background: #e0e7ff;
+            color: #4f46e5;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .category-tag button {
+            background: none;
+            border: none;
+            color: #ef4444;
+            cursor: pointer;
+            font-size: 12px;
+            padding: 0;
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .add-category-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .add-category-form input {
+            flex: 1;
+        }
+        
+        small { color: #6b7280; font-size: 14px; display: block; margin-top: 5px; }
+        
+        @media (max-width: 768px) {
+            .container { padding: 20px; }
+            .btn { width: 100%; margin-right: 0; }
+            .upload-options { flex-direction: column; }
+            .tabs { flex-direction: column; }
+            .tab { text-align: center; }
+            .add-category-form { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-cogs"></i> Admin Toko Enam Satu - Auto Sync</h1>
+        
+        <!-- API Status -->
+        <div class="api-status">
+            <span class="status-indicator" id="statusIndicator"></span>
+            <span id="statusText">Mengecek koneksi...</span>
+        </div>
+        
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('add')">Tambah Produk</div>
+            <div class="tab" onclick="switchTab('upload')">Upload Gambar</div>
+            <div class="tab" onclick="switchTab('gallery')">Gallery</div>
+            <div class="tab" onclick="switchTab('categories')">Kategori</div>
+            <div class="tab" onclick="switchTab('logs')">Logs & Status</div>
+            <div class="tab" onclick="switchTab('settings')">Pengaturan</div>
+        </div>
+        
+        <!-- Tab 1: Tambah Produk -->
+        <div id="tab-add" class="tab-content active">
+            <h2><i class="fas fa-plus-circle"></i> Tambah Produk Baru</h2>
+            
+            <div class="form-group">
+                <label for="productName">Nama Produk *</label>
+                <input type="text" id="productName" placeholder="Contoh: Joran Pancing Fiber">
+            </div>
+            
+            <div class="form-group">
+                <label for="productPrice">Harga (Rp) *</label>
+                <input type="number" id="productPrice" placeholder="Contoh: 85000">
+            </div>
+            
+            <div class="form-group">
+                <label for="productCategory">Kategori *</label>
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <select id="productCategory" style="flex: 1;">
+                        <option value="">Pilih kategori</option>
+                    </select>
+                    <button class="btn btn-info" onclick="switchTab('categories')" style="white-space: nowrap;">
+                        <i class="fas fa-plus"></i> Kategori Baru
+                    </button>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="productStock">Stok *</label>
+                <input type="number" id="productStock" placeholder="Contoh: 15">
+            </div>
+            
+            <div class="form-group">
+                <label for="productImage">URL Gambar *</label>
+                <div style="display: flex; gap: 10px;">
+                    <input type="text" id="productImage" placeholder="URL dari Google Drive" style="flex: 1;">
+                    <button class="btn btn-secondary" onclick="switchTab('gallery');" style="white-space: nowrap;">
+                        <i class="fas fa-image"></i> Pilih dari Gallery
+                    </button>
+                </div>
+                <small>URL gambar dari Google Drive atau gallery</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="productDesc">Deskripsi Produk *</label>
+                <textarea id="productDesc" placeholder="Deskripsi lengkap produk..."></textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="productFeatures">Fitur (pisahkan dengan koma)</label>
+                <input type="text" id="productFeatures" placeholder="Contoh: Fiber kuat, Ringan, Tahan air">
+            </div>
+            
+            <button class="btn" id="addProductBtn" onclick="addProduct()">
+                <i class="fas fa-plus"></i> Tambah Produk ke Google Sheets
+            </button>
+            
+            <div class="progress-bar">
+                <div class="progress" id="uploadProgress"></div>
+            </div>
+            
+            <div class="message loading" id="loadingMessage">
+                <i class="fas fa-spinner fa-spin"></i> Mengirim data ke Google Sheets...
+            </div>
+            
+            <div class="message success" id="successMessage">
+                <i class="fas fa-check-circle"></i> Produk berhasil ditambahkan ke Google Sheets!
+            </div>
+            
+            <div class="message error" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i> <span id="errorText"></span>
+            </div>
+        </div>
+        
+        <!-- Tab 2: Upload Gambar ke Google Drive -->
+        <div id="tab-upload" class="tab-content">
+            <h2><i class="fas fa-cloud-upload-alt"></i> Upload Gambar ke Google Drive</h2>
+            
+            <div class="instructions">
+                <h3><i class="fas fa-info-circle"></i> Cara Upload ke Google Drive:</h3>
+                <ol>
+                    <li>Upload gambar ke Google Drive (drive.google.com)</li>
+                    <li>Setel izin menjadi "Anyone with the link can view"</li>
+                    <li>Copy link gambar</li>
+                    <li>Ubah link menjadi format langsung</li>
+                    <li>Paste URL di form Tambah Produk</li>
+                </ol>
+                <p><strong>Format URL langsung:</strong> <code>https://drive.google.com/uc?export=view&id=FILE_ID</code></p>
+            </div>
+            
+            <div class="upload-options">
+                <button class="btn btn-success" onclick="showFileUpload()" id="fileUploadBtn">
+                    <i class="fas fa-upload"></i> Upload dari File
+                </button>
+                <button class="btn btn-warning" onclick="showCamera()" id="cameraBtn">
+                    <i class="fas fa-camera"></i> Ambil Foto
+                </button>
+            </div>
+            
+            <!-- File Upload Area -->
+            <div id="fileUploadArea" class="upload-section">
+                <div class="upload-area" id="dropArea" onclick="document.getElementById('fileInput').click()">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="upload-text">
+                        <h3>Upload gambar lokal</h3>
+                        <p>Format: JPG, PNG, WEBP (Maks. 5MB)</p>
+                        <p><strong>Catatan:</strong> Gambar akan disimpan di browser Anda</p>
+                    </div>
+                    <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                </div>
+                
+                <div class="form-group">
+                    <label for="fileName">Nama File:</label>
+                    <input type="text" id="fileName" placeholder="contoh: joran-pancing-01.jpg">
+                    <small>Nama untuk identifikasi gambar</small>
+                </div>
+                
+                <div class="image-preview" id="imagePreview">
+                    <button class="remove-btn" onclick="removePreview()">×</button>
+                    <img id="previewImg" src="" alt="Preview Gambar">
+                </div>
+                
+                <button class="btn" id="uploadBtn" onclick="saveImageToLocal()" disabled>
+                    <i class="fas fa-save"></i> Simpan ke Gallery Lokal
+                </button>
+            </div>
+            
+            <!-- Camera Area -->
+            <div id="cameraArea" class="upload-section">
+                <div class="camera-container" id="cameraContainer">
+                    <div id="cameraStatus">
+                        <p><i class="fas fa-spinner fa-spin"></i> Mengakses kamera...</p>
+                    </div>
+                    <video id="cameraVideo" autoplay playsinline></video>
+                    <canvas id="cameraCanvas" style="display: none;"></canvas>
+                    
+                    <div class="camera-controls">
+                        <button class="btn btn-success" onclick="takePhoto()" id="takePhotoBtn" disabled>
+                            <i class="fas fa-camera"></i> Ambil Foto
+                        </button>
+                        <button class="btn btn-secondary" onclick="stopCamera()">
+                            <i class="fas fa-stop"></i> Stop Kamera
+                        </button>
+                    </div>
+                    
+                    <div class="image-preview" id="photoPreview">
+                        <button class="remove-btn" onclick="removePhotoPreview()">×</button>
+                        <img id="photoImg" src="" alt="Preview Foto">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="photoName">Nama File untuk Foto:</label>
+                        <input type="text" id="photoName" placeholder="contoh: produk-foto-01.jpg">
+                    </div>
+                    
+                    <button class="btn" onclick="savePhotoToLocal()" id="savePhotoBtn" disabled>
+                        <i class="fas fa-save"></i> Simpan Foto ke Gallery
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Google Drive Instructions -->
+            <div class="instructions">
+                <h3><i class="fab fa-google-drive"></i> Upload ke Google Drive Manual:</h3>
+                <ol>
+                    <li>Buka <a href="https://drive.google.com" target="_blank">Google Drive</a></li>
+                    <li>Klik "New" → "File upload"</li>
+                    <li>Pilih gambar yang ingin diupload</li>
+                    <li>Setelah upload selesai, klik kanan file → "Get link"</li>
+                    <li>Ubah dari "Restricted" ke "Anyone with the link"</li>
+                    <li>Copy link, contoh: <code>https://drive.google.com/file/d/ABC123xyz/view</code></li>
+                    <li>Ubah menjadi: <code>https://drive.google.com/uc?export=view&id=ABC123xyz</code></li>
+                    <li>Gunakan URL tersebut di form produk</li>
+                </ol>
+                
+                <div class="form-group">
+                    <label>URL Google Drive (contoh):</label>
+                    <input type="text" value="https://drive.google.com/uc?export=view&id=YOUR_FILE_ID_HERE" readonly onclick="this.select()">
+                </div>
+            </div>
+            
+            <!-- Upload Status -->
+            <div class="message info" id="uploadStatus" style="display: none;">
+                <i class="fas fa-spinner fa-spin"></i> <span id="uploadStatusText"></span>
+            </div>
+            
+            <div class="message success" id="uploadSuccessMessage" style="display: none;">
+                <i class="fas fa-check-circle"></i> <span id="uploadSuccessText"></span>
+            </div>
+            
+            <div class="message error" id="uploadErrorMessage" style="display: none;">
+                <i class="fas fa-exclamation-circle"></i> <span id="uploadErrorText"></span>
+            </div>
+        </div>
+        
+        <!-- Tab 3: Gallery -->
+        <div id="tab-gallery" class="tab-content">
+            <h2><i class="fas fa-images"></i> Gallery Gambar</h2>
+            
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <button class="btn" onclick="loadGallery()">
+                    <i class="fas fa-sync-alt"></i> Refresh Gallery
+                </button>
+                <button class="btn btn-success" onclick="switchTab('upload')">
+                    <i class="fas fa-upload"></i> Tambah Gambar Baru
+                </button>
+                <div style="flex: 1; min-width: 200px;">
+                    <input type="text" id="searchGallery" placeholder="Cari gambar..." oninput="searchGallery()" style="width: 100%;">
+                </div>
+            </div>
+            
+            <div class="gallery-container" id="galleryContainer">
+                <div id="galleryInfo">
+                    <p>Memuat gallery...</p>
+                </div>
+                <div class="image-gallery" id="imageGallery">
+                    <!-- Gambar akan ditampilkan di sini -->
+                </div>
+            </div>
+            
+            <div class="instructions">
+                <h3><i class="fas fa-info-circle"></i> Petunjuk:</h3>
+                <p>Klik "Gunakan" untuk memilih gambar yang akan digunakan di produk.</p>
+                <p>Klik "Copy URL" untuk menyalin URL gambar ke clipboard.</p>
+                <p><strong>Note:</strong> Gambar disimpan di browser lokal Anda.</p>
+            </div>
+        </div>
+        
+        <!-- Tab 4: Kategori -->
+        <div id="tab-categories" class="tab-content">
+            <h2><i class="fas fa-tags"></i> Manajemen Kategori</h2>
+            
+            <div class="category-management">
+                <h3><i class="fas fa-list"></i> Daftar Kategori</h3>
+                <div id="categoryList" class="category-list">
+                    <!-- Kategori akan ditampilkan di sini -->
+                </div>
+                
+                <h3><i class="fas fa-plus"></i> Tambah Kategori Baru</h3>
+                <div class="add-category-form">
+                    <input type="text" id="newCategoryName" placeholder="Nama kategori baru">
+                    <input type="text" id="newCategorySlug" placeholder="Slug (huruf kecil, tanpa spasi)">
+                    <button class="btn btn-success" onclick="addCategory()">
+                        <i class="fas fa-plus"></i> Tambah
+                    </button>
+                </div>
+                <small>Slug akan digunakan di Google Sheets (contoh: "alat-pancing" untuk "Alat Pancing")</small>
+            </div>
+            
+            <div class="instructions">
+                <h3><i class="fas fa-info-circle"></i> Cara Kerja:</h3>
+                <p>1. Kategori disimpan di Google Sheets terpisah</p>
+                <p>2. Setelah tambah kategori, refresh halaman untuk melihat di dropdown</p>
+                <p>3. Kategori akan otomatis tersedia di form produk</p>
+            </div>
+        </div>
+        
+        <!-- Tab 5: Logs -->
+        <div id="tab-logs" class="tab-content">
+            <h2><i class="fas fa-history"></i> Logs & Status Sync</h2>
+            
+            <button class="btn" onclick="checkConnection()">
+                <i class="fas fa-sync-alt"></i> Test Koneksi
+            </button>
+            <button class="btn btn-secondary" onclick="clearLogs()">
+                <i class="fas fa-trash"></i> Clear Logs
+            </button>
+            
+            <div class="log-container" id="logContainer">
+                <!-- Logs akan muncul di sini -->
+            </div>
+            
+            <div class="instructions">
+                <h3><i class="fas fa-info-circle"></i> Status Terakhir:</h3>
+                <div id="lastSyncStatus"></div>
+            </div>
+        </div>
+        
+        <!-- Tab 6: Settings -->
+        <div id="tab-settings" class="tab-content">
+            <h2><i class="fas fa-cog"></i> Pengaturan API</h2>
+            
+            <div class="form-group">
+                <label for="apiUrl">Google Apps Script URL *</label>
+                <input type="text" id="apiUrl" placeholder="https://script.google.com/macros/s/.../exec">
+                <small>URL Web App dari Google Apps Script untuk produk</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="categoriesApiUrl">Google Apps Script untuk Kategori</label>
+                <input type="text" id="categoriesApiUrl" placeholder="https://script.google.com/macros/s/.../exec">
+                <small>URL Web App untuk manajemen kategori (opsional)</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="sheetId">Google Sheets ID Produk</label>
+                <input type="text" id="sheetId" value="1MJ_YomCSW1lZbL8pjfNdUU2r5jd4KvCBneNhCZ9Uctw" readonly>
+                <small>ID spreadsheet produk Anda</small>
+            </div>
+            
+            <button class="btn btn-success" onclick="saveSettings()">
+                <i class="fas fa-save"></i> Simpan Pengaturan
+            </button>
+            
+            <div class="instructions">
+                <h3><i class="fas fa-book"></i> Setup Google Apps Script:</h3>
+                <div id="scriptCode" style="display: none;">
+// Google Apps Script untuk Produk
+const SHEET_ID = 'YOUR_SHEET_ID';
+const SHEET_NAME = 'Sheet1';
+
+function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const ss = SpreadsheetApp.openById(SHEET_ID);
+    const sheet = ss.getSheetByName(SHEET_NAME);
+    const lastRow = sheet.getLastRow() + 1;
+    
+    const rowData = [
+      data.id,
+      data.name,
+      data.price,
+      data.category,
+      data.stock,
+      data.image,
+      data.description,
+      data.features,
+      data.status || 'active'
+    ];
+    
+    sheet.getRange(lastRow, 1, 1, rowData.length).setValues([rowData]);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: true,
+        message: 'Produk berhasil ditambahkan',
+        row: lastRow
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+      
+  } catch (error) {
+    return ContentService
+      .createTextOutput(JSON.stringify({
+        success: false,
+        error: error.message
+      }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService
+    .createTextOutput(JSON.stringify({
+      message: 'TokoEnamSatu API',
+      endpoints: { addProduct: 'POST dengan JSON' }
+    }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+                </div>
+                <button class="btn" onclick="copyScriptCode()" style="padding: 5px 10px; font-size: 12px;">
+                    <i class="fas fa-copy"></i> Copy Script Code
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Konfigurasi
+        const CONFIG = {
+            API_URL: localStorage.getItem('apiUrl') || '',
+            CATEGORIES_API_URL: localStorage.getItem('categoriesApiUrl') || '',
+            SHEET_ID: '1MJ_YomCSW1lZbL8pjfNdUU2r5jd4KvCBneNhCZ9Uctw'
+        };
+        
+        let logs = JSON.parse(localStorage.getItem('syncLogs') || '[]');
+        let galleryImages = JSON.parse(localStorage.getItem('galleryImages') || '[]');
+        let categories = JSON.parse(localStorage.getItem('categories') || '[]');
+        let currentImageFile = null;
+        let cameraStream = null;
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            loadSettings();
+            checkConnection();
+            renderLogs();
+            updateLastSync();
+            initUploadListeners();
+            loadGallery();
+            loadCategories();
+            showFileUpload();
+            
+            // Load initial categories if empty
+            if (categories.length === 0) {
+                categories = [
+                    { id: 'pancing', name: 'Alat Pancing', slug: 'pancing' },
+                    { id: 'tahu', name: 'Alat Pembuatan Tahu', slug: 'tahu' }
+                ];
+                localStorage.setItem('categories', JSON.stringify(categories));
+                updateCategoryDropdown();
+            }
+        });
+        
+        // Tab switching
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+            
+            if (tabName === 'gallery') {
+                loadGallery();
+            } else if (tabName === 'categories') {
+                renderCategories();
+            }
+        }
+        
+        // ============ KATEGORI FUNCTIONS ============
+        
+        function loadCategories() {
+            updateCategoryDropdown();
+            renderCategories();
+        }
+        
+        function updateCategoryDropdown() {
+            const select = document.getElementById('productCategory');
+            select.innerHTML = '<option value="">Pilih kategori</option>';
+            
+            categories.forEach(category => {
+                const option = document.createElement('option');
+                option.value = category.slug;
+                option.textContent = category.name;
+                select.appendChild(option);
+            });
+        }
+        
+        function renderCategories() {
+            const container = document.getElementById('categoryList');
+            container.innerHTML = '';
+            
+            if (categories.length === 0) {
+                container.innerHTML = '<p style="color: #6b7280;">Belum ada kategori. Tambah kategori baru.</p>';
+                return;
+            }
+            
+            categories.forEach(category => {
+                const tag = document.createElement('div');
+                tag.className = 'category-tag';
+                tag.innerHTML = `
+                    ${category.name}
+                    <button onclick="deleteCategory('${category.id}')">×</button>
+                `;
+                container.appendChild(tag);
+            });
+        }
+
+        function addCategory() {
+            const name = document.getElementById('newCategoryName').value.trim();
+            let slug = document.getElementById('newCategorySlug').value.trim();
+            
+            if (!name) {
+                showMessage('error', 'Nama kategori harus diisi');
+                return;
+            }
+            
+            if (!slug) {
+                // Generate slug from name
+                slug = name.toLowerCase()
+                    .replace(/[^a-z0-9]/g, '-')
+                    .replace(/-+/g, '-')
+                    .replace(/^-|-$/g, '');
+            }
+            
+            // Check if slug already exists
+            if (categories.some(cat => cat.slug === slug)) {
+                showMessage('error', 'Slug sudah digunakan');
+                return;
+            }
+            
+            const category = {
+                id: Date.now().toString(),
+                name: name,
+                slug: slug,
+                created: new Date().toISOString()
+            };
+            
+            categories.push(category);
+            localStorage.setItem('categories', JSON.stringify(categories));
+            
+            updateCategoryDropdown();
+            renderCategories();
+            
+            // Clear form
+            document.getElementById('newCategoryName').value = '';
+            document.getElementById('newCategorySlug').value = '';
+            
+            showMessage('success', `Kategori "${name}" berhasil ditambahkan`);
+            addLog(`Kategori ditambahkan: ${name}`, 'success');
+            
+            // Save to Google Sheets if API URL is set
+            if (CONFIG.CATEGORIES_API_URL) {
+                saveCategoryToGoogleSheets(category);
+            }
+        }
+        
+        function deleteCategory(id) {
+            if (!confirm('Apakah Anda yakin ingin menghapus kategori ini?')) {
+                return;
+            }
+            
+            const categoryIndex = categories.findIndex(cat => cat.id === id);
+            if (categoryIndex !== -1) {
+                const categoryName = categories[categoryIndex].name;
+                categories.splice(categoryIndex, 1);
+                localStorage.setItem('categories', JSON.stringify(categories));
+                
+                updateCategoryDropdown();
+                renderCategories();
+                
+                showMessage('success', `Kategori "${categoryName}" berhasil dihapus`);
+                addLog(`Kategori dihapus: ${categoryName}`, 'warning');
+            }
+        }
+        
+        async function saveCategoryToGoogleSheets(category) {
+            try {
+                const response = await fetch(CONFIG.CATEGORIES_API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'category',
+                        id: category.id,
+                        name: category.name,
+                        slug: category.slug,
+                        created: category.created
+                    })
+                });
+                
+                addLog(`Kategori "${category.name}" disimpan ke Google Sheets`, 'info');
+            } catch (error) {
+                addLog(`Gagal menyimpan kategori: ${error.message}`, 'error');
+            }
+        }
+        
+        // ============ UPLOAD GAMBAR FUNCTIONS ============
+        
+        function initUploadListeners() {
+            // File input change
+            document.getElementById('fileInput').addEventListener('change', function(e) {
+                if (e.target.files.length > 0) {
+                    handleFileSelect(e.target.files[0]);
+                }
+            });
+            
+            // Drag and drop
+            const dropArea = document.getElementById('dropArea');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropArea.classList.add('dragover');
+            }
+            
+            function unhighlight() {
+                dropArea.classList.remove('dragover');
+            }
+            
+            dropArea.addEventListener('drop', function(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    handleFileSelect(files[0]);
+                }
+            });
+        }
+        
+        function showFileUpload() {
+            document.getElementById('fileUploadArea').style.display = 'block';
+            document.getElementById('cameraArea').style.display = 'none';
+            document.getElementById('fileUploadBtn').classList.add('active');
+            document.getElementById('cameraBtn').classList.remove('active');
+            stopCamera();
+        }
+        
+        function showCamera() {
+            document.getElementById('fileUploadArea').style.display = 'none';
+            document.getElementById('cameraArea').style.display = 'block';
+            document.getElementById('cameraBtn').classList.add('active');
+            document.getElementById('fileUploadBtn').classList.remove('active');
+            startCamera();
+        }
+        
+        function handleFileSelect(file) {
+            if (!file.type.match('image.*')) {
+                showUploadError('File harus berupa gambar (JPG, PNG, WEBP)');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                showUploadError('Ukuran file maksimal 5MB');
+                return;
+            }
+            
+            currentImageFile = file;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('previewImg').src = e.target.result;
+                document.getElementById('imagePreview').style.display = 'block';
+                document.getElementById('uploadBtn').disabled = false;
+                
+                // Suggest filename
+                const originalName = file.name.replace(/\.[^/.]+$/, "");
+                const cleanName = originalName
+                    .toLowerCase()
+                    .replace(/[^a-z0-9]/g, '-')
+                    .replace(/-+/g, '-')
+                    .substring(0, 50);
+                const extension = file.name.split('.').pop().toLowerCase();
+                document.getElementById('fileName').value = `${cleanName}-${Date.now()}.${extension}`;
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        function removePreview() {
+            document.getElementById('imagePreview').style.display = 'none';
+            document.getElementById('fileInput').value = '';
+            document.getElementById('uploadBtn').disabled = true;
+            currentImageFile = null;
+        }
+        
+        // ============ KAMERA FUNCTIONS ============
+        
+        async function startCamera() {
+            try {
+                const constraints = {
+                    video: { 
+                        facingMode: 'environment',
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    }
+                };
+                
+                cameraStream = await navigator.mediaDevices.getUserMedia(constraints);
+                
+                const video = document.getElementById('cameraVideo');
+                video.srcObject = cameraStream;
+                
+                document.getElementById('takePhotoBtn').disabled = false;
+                document.getElementById('cameraStatus').innerHTML = '<p><i class="fas fa-check-circle"></i> Kamera siap digunakan</p>';
+                
+            } catch (error) {
+                document.getElementById('cameraStatus').innerHTML = `
+                    <p style="color: #ef4444;">
+                        <i class="fas fa-exclamation-circle"></i> 
+                        Gagal mengakses kamera: ${error.message}
+                    </p>
+                    <p>Pastikan izin kamera diberikan pada browser</p>
+                `;
+                document.getElementById('takePhotoBtn').disabled = true;
+            }
+        }
+        
+        function stopCamera() {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+                document.getElementById('cameraVideo').srcObject = null;
+                document.getElementById('photoPreview').style.display = 'none';
+                document.getElementById('savePhotoBtn').disabled = true;
+            }
+        }
+        
+        function takePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            const context = canvas.getContext('2d');
+            
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            
+            // Convert to blob
+            canvas.toBlob(function(blob) {
+                currentImageFile = new File([blob], 'photo.jpg', { 
+                    type: 'image/jpeg',
+                    lastModified: Date.now()
+                });
+                
+                // Show preview
+                const photoUrl = URL.createObjectURL(blob);
+                document.getElementById('photoImg').src = photoUrl;
+                document.getElementById('photoPreview').style.display = 'block';
+                document.getElementById('savePhotoBtn').disabled = false;
+                
+                // Suggest filename
+                const timestamp = new Date().getTime();
+                document.getElementById('photoName').value = `foto-produk-${timestamp}.jpg`;
+                
+            }, 'image/jpeg', 0.8);
+        }
+        
+        function removePhotoPreview() {
+            document.getElementById('photoPreview').style.display = 'none';
+            document.getElementById('savePhotoBtn').disabled = true;
+            currentImageFile = null;
+        }
+        
+        // ============ SIMPAN GAMBAR KE LOCAL ============
+        
+        function saveImageToLocal() {
+            const fileName = document.getElementById('fileName').value.trim() || `gambar-${Date.now()}.jpg`;
+            saveImageToGallery(currentImageFile, fileName);
+        }
+        
+        function savePhotoToLocal() {
+            const fileName = document.getElementById('photoName').value.trim() || `foto-${Date.now()}.jpg`;
+            saveImageToGallery(currentImageFile, fileName);
+        }
+        
+        function saveImageToGallery(file, fileName) {
+            if (!file) {
+                showUploadError('Tidak ada gambar yang dipilih');
+                return;
+            }
+            
+            showUploadStatus('Menyimpan gambar...');
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imageData = {
+                    id: Date.now().toString(),
+                    name: fileName,
+                    dataUrl: e.target.result,
+                    size: file.size,
+                    type: file.type,
+                    date: new Date().toLocaleDateString('id-ID'),
+                    time: new Date().toLocaleTimeString('id-ID'),
+                    source: 'local'
+                };
+                
+                // Add to gallery
+                galleryImages.unshift(imageData);
+                if (galleryImages.length > 50) galleryImages.pop();
+                localStorage.setItem('galleryImages', JSON.stringify(galleryImages));
+                
+                // Show success
+                showUploadSuccess(`Gambar "${fileName}" berhasil disimpan ke gallery lokal!`);
+                addLog(`Gambar disimpan: ${fileName}`, 'success');
+                
+                // Update gallery
+                loadGallery();
+                
+                // Auto-fill image field in product form
+                document.getElementById('productImage').value = fileName;
+                
+                // Reset
+                removePreview();
+                removePhotoPreview();
+                document.getElementById('fileName').value = '';
+                document.getElementById('photoName').value = '';
+                document.getElementById('uploadBtn').disabled = true;
+                document.getElementById('savePhotoBtn').disabled = true;
+                
+            };
+            reader.readAsDataURL(file);
+        }
+        
+        // ============ GALLERY FUNCTIONS ============
+        
+        function loadGallery() {
+            const gallery = document.getElementById('imageGallery');
+            const info = document.getElementById('galleryInfo');
+            
+            gallery.innerHTML = '';
+            
+            if (galleryImages.length === 0) {
+                info.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #6b7280;">
+                        <i class="fas fa-images" style="font-size: 48px; opacity: 0.5;"></i>
+                        <h3 style="margin: 15px 0;">Belum ada gambar</h3>
+                        <p>Upload gambar pertama Anda di tab "Upload Gambar"</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            info.innerHTML = `<p>Menampilkan ${galleryImages.length} gambar (disimpan di browser)</p>`;
+            
+            galleryImages.forEach((img, index) => {
+                const item = document.createElement('div');
+                item.className = 'image-item';
+                item.innerHTML = `
+                    <div class="image-thumbnail">
+                        ${img.dataUrl ? `<img src="${img.dataUrl}" alt="${img.name}">` : `<i class="fas fa-image"></i>`}
+                    </div>
+                    <div class="image-info">
+                        <strong style="display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${img.name}">${img.name}</strong>
+                        <div style="font-size: 11px; color: #6b7280; margin-top: 5px;">
+                            ${Math.round(img.size / 1024)} KB<br>
+                            ${img.date} ${img.time}
+                        </div>
+                        <div style="display: flex; gap: 5px; margin-top: 8px;">
+                            <button class="btn" onclick="useImage('${img.name}')" style="flex: 1; padding: 5px; font-size: 12px;">
+                                <i class="fas fa-check"></i> Gunakan
+                            </button>
+                            <button class="btn btn-secondary" onclick="copyImageUrl('${img.dataUrl}', '${img.name}')" style="padding: 5px 8px; font-size: 12px;">
+                                <i class="fas fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                gallery.appendChild(item);
+            });
+            
+            document.getElementById('galleryContainer').style.display = 'block';
+        }
+        
+        function searchGallery() {
+            const searchTerm = document.getElementById('searchGallery').value.toLowerCase();
+            const items = document.querySelectorAll('.image-item');
+            
+            items.forEach(item => {
+                const title = item.querySelector('strong').textContent.toLowerCase();
+                if (title.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+        
+        function useImage(fileName) {
+            const image = galleryImages.find(img => img.name === fileName);
+            if (image) {
+                document.getElementById('productImage').value = image.dataUrl;
+                switchTab('add');
+                showMessage('info', `Gambar "${fileName}" telah dipilih`);
+            }
+        }
+        
+        function copyImageUrl(dataUrl, fileName) {
+            // For local images, copy data URL
+            navigator.clipboard.writeText(dataUrl).then(() => {
+                showMessage('success', `URL gambar "${fileName}" berhasil disalin`);
+            });
+        }
+        
+        // ============ UPLOAD UI HELPERS ============
+        
+        function showUploadStatus(message) {
+            document.getElementById('uploadStatusText').textContent = message;
+            document.getElementById('uploadStatus').style.display = 'block';
+            document.getElementById('uploadSuccessMessage').style.display = 'none';
+            document.getElementById('uploadErrorMessage').style.display = 'none';
+        }
+        
+        function showUploadSuccess(message) {
+            document.getElementById('uploadSuccessText').textContent = message;
+            document.getElementById('uploadSuccessMessage').style.display = 'block';
+            document.getElementById('uploadStatus').style.display = 'none';
+            document.getElementById('uploadErrorMessage').style.display = 'none';
+        }
+        
+        function showUploadError(message) {
+            document.getElementById('uploadErrorText').textContent = message;
+            document.getElementById('uploadErrorMessage').style.display = 'block';
+            document.getElementById('uploadStatus').style.display = 'none';
+            document.getElementById('uploadSuccessMessage').style.display = 'none';
+        }
+        
+        // ============ PRODUK & SETTINGS FUNCTIONS ============
+        
+        function loadSettings() {
+            document.getElementById('apiUrl').value = CONFIG.API_URL;
+            document.getElementById('categoriesApiUrl').value = CONFIG.CATEGORIES_API_URL || '';
+            document.getElementById('sheetId').value = CONFIG.SHEET_ID;
+        }
+        
+        function saveSettings() {
+            const apiUrl = document.getElementById('apiUrl').value.trim();
+            const categoriesApiUrl = document.getElementById('categoriesApiUrl').value.trim();
+            
+            if (apiUrl && !apiUrl.includes('https://script.google.com/')) {
+                showError('URL harus dari Google Apps Script');
+                return;
+            }
+            
+            CONFIG.API_URL = apiUrl;
+            CONFIG.CATEGORIES_API_URL = categoriesApiUrl;
+            localStorage.setItem('apiUrl', apiUrl);
+            localStorage.setItem('categoriesApiUrl', categoriesApiUrl);
+            
+            addLog('Pengaturan disimpan', 'info');
+            checkConnection();
+            showMessage('success', 'Pengaturan berhasil disimpan');
+        }
+        
+        async function checkConnection() {
+            if (!CONFIG.API_URL) {
+                updateStatus('disconnected', 'URL API belum diatur');
+                return;
+            }
+            
+            updateStatus('connecting', 'Mengecek koneksi...');
+            
+            try {
+                const response = await fetch(CONFIG.API_URL);
+                const data = await response.json();
+                
+                if (data.message) {
+                    updateStatus('connected', 'Terhubung ke Google Sheets');
+                    addLog('Koneksi berhasil', 'success');
+                } else {
+                    updateStatus('disconnected', 'Respon tidak valid');
+                    addLog('Respon tidak valid dari API', 'error');
+                }
+            } catch (error) {
+                updateStatus('disconnected', `Error: ${error.message}`);
+                addLog(`Koneksi gagal: ${error.message}`, 'error');
+            }
+        }
+        
+        function updateStatus(status, message) {
+            const indicator = document.getElementById('statusIndicator');
+            const text = document.getElementById('statusText');
+            
+            indicator.className = 'status-indicator';
+            indicator.classList.add(`status-${status}`);
+            
+            text.textContent = message;
+        }
+
+             
+        async function addProduct() {
+            const name = document.getElementById('productName').value.trim();
+            const price = document.getElementById('productPrice').value;
+            const category = document.getElementById('productCategory').value;
+            const stock = document.getElementById('productStock').value;
+            const image = document.getElementById('productImage').value.trim();
+            const desc = document.getElementById('productDesc').value.trim();
+            const features = document.getElementById('productFeatures').value.trim();
+            
+            if (!name || !price || !category || !stock || !image || !desc) {
+                showError('Harap isi semua field yang wajib!');
+                return;
+            }
+            
+            if (!CONFIG.API_URL) {
+                showError('URL API belum diatur. Atur di tab Pengaturan.');
+                return;
+            }
+            
+            // Check if image is data URL (local) or external URL
+            const imageUrl = image.startsWith('data:') ? 'local-image-' + Date.now() + '.jpg' : image;
+            
+            const productData = {
+                id: Date.now(),
+                name: name,
+                price: parseInt(price),
+                category: category,
+                stock: parseInt(stock),
+                image: imageUrl,
+                description: desc,
+                features: features,
+                status: 'active',
+                timestamp: new Date().toISOString()
+            };
+            
+            showLoading(true);
+            
+            try {
+                const response = await fetch(CONFIG.API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(productData)
+                });
+                
+                setTimeout(() => {
+                    showLoading(false);
+                    showSuccess('Produk berhasil ditambahkan ke Google Sheets!');
+                    addLog(`Produk "${name}" ditambahkan`, 'success');
+                    updateLastSync();
+                    
+                    resetForm();
+                    
+                    setTimeout(() => {
+                        window.open('/', '_blank');
+                    }, 2000);
+                    
+                }, 2000);
+                
+            } catch (error) {
+                showLoading(false);
+                showError(`Gagal mengirim data: ${error.message}`);
+                addLog(`Gagal menambah produk: ${error.message}`, 'error');
+            }
+        }
+        
+        function showLoading(show) {
+            const btn = document.getElementById('addProductBtn');
+            const loading = document.getElementById('loadingMessage');
+            const progress = document.getElementById('uploadProgress');
+            
+            if (show) {
+                btn.disabled = true;
+                loading.style.display = 'block';
+                document.getElementById('successMessage').style.display = 'none';
+                document.getElementById('errorMessage').style.display = 'none';
+                
+                let width = 0;
+                const interval = setInterval(() => {
+                    if (width >= 100) {
+                        clearInterval(interval);
+                        progress.style.width = '0%';
+                    } else {
+                        width += 10;
+                        progress.style.width = width + '%';
+                    }
+                }, 200);
+                
+            } else {
+                btn.disabled = false;
+                loading.style.display = 'none';
+                progress.style.width = '0%';
+            }
+        }
+        
+        function showSuccess(message) {
+            const success = document.getElementById('successMessage');
+            success.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            success.style.display = 'block';
+            document.getElementById('errorMessage').style.display = 'none';
+        }
+        
+        function showError(message) {
+            const error = document.getElementById('errorMessage');
+            error.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            error.style.display = 'block';
+            document.getElementById('successMessage').style.display = 'none';
+        }
+        
+        function showMessage(type, text) {
+            const message = document.getElementById('successMessage');
+            message.innerHTML = `<i class="fas fa-info-circle"></i> ${text}`;
+            message.className = `message ${type}`;
+            message.style.display = 'block';
+            setTimeout(() => { message.style.display = 'none'; }, 3000);
+        }
+        
+        function resetForm() {
+            document.getElementById('productName').value = '';
+            document.getElementById('productPrice').value = '';
+            document.getElementById('productCategory').value = '';
+            document.getElementById('productStock').value = '';
+            document.getElementById('productImage').value = '';
+            document.getElementById('productDesc').value = '';
+            document.getElementById('productFeatures').value = '';
+        }
+        
+        function addLog(message, type = 'info') {
+            const log = {
+                timestamp: new Date().toLocaleTimeString('id-ID'),
+                message: message,
+                type: type
+            };
+            
+            logs.unshift(log);
+            if (logs.length > 50) logs.pop();
+            
+            localStorage.setItem('syncLogs', JSON.stringify(logs));
+            renderLogs();
+        }
+        
+        function renderLogs() {
+            const container = document.getElementById('logContainer');
+            let html = '';
+            
+            logs.forEach(log => {
+                html += `
+                    <div class="log-entry">
+                        <span class="log-time">[${log.timestamp}]</span>
+                        <span class="log-${log.type}"> ${log.message}</span>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html || '<div class="log-entry">Belum ada logs</div>';
+        }
+        
+        function clearLogs() {
+            logs = [];
+            localStorage.removeItem('syncLogs');
+            renderLogs();
+            addLog('Logs telah dibersihkan', 'info');
+        }
+        
+        function updateLastSync() {
+            const lastSync = document.getElementById('lastSyncStatus');
+            const lastLog = logs.find(log => log.type === 'success' && log.message.includes('Produk'));
+            
+            if (lastLog) {
+                lastSync.innerHTML = `
+                    <p><strong>Terakhir sukses:</strong> ${lastLog.timestamp}</p>
+                    <p><strong>Pesan:</strong> ${lastLog.message}</p>
+                `;
+            } else {
+                lastSync.innerHTML = '<p>Belum ada sync yang sukses</p>';
+            }
+        }
+        
+        function copyScriptCode() {
+            const code = document.getElementById('scriptCode').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                alert('Kode script telah disalin ke clipboard!');
+                addLog('Kode script disalin', 'info');
+            });
+        }
+        
+        // Load sample images for demo
+        setTimeout(() => {
+            if (galleryImages.length === 0) {
+                // Add some sample local images
+                const sampleImages = [
+                    { id: '1', name: 'joran-pancing-sample.jpg', dataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2U1ZTdlYiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5Kb3JhbiBQYW5jaW5nPC90ZXh0Pjwvc3ZnPg==', size: 1024, type: 'image/svg+xml', date: '2024-01-15', time: '10:30', source: 'sample' },
+                    { id: '2', name: 'cetakan-tahu-sample.jpg', dataUrl: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgZmlsbD0iI2U1ZTdlYiIvPjx0ZXh0IHg9IjEwMCIgeT0iMTAwIiBmb250LWZhbWlseT0iQXJpYWwiIGZvbnQtc2l6ZT0iMTQiIGZpbGw9IiM5Y2EzYWYiIHRleHQtYW5jaG9yPSJtaWRkbGUiIGR5PSIuM2VtIj5DZXRha2FuIFRhaHU8L3RleHQ+PC9zdmc+', size: 1024, type: 'image/svg+xml', date: '2024-01-14', time: '14:20', source: 'sample' }
+                ];
+                
+                galleryImages.push(...sampleImages);
+                localStorage.setItem('galleryImages', JSON.stringify(galleryImages));
+                loadGallery();
+            }
+        }, 1000);
+    </script>
+</body>
+</html>

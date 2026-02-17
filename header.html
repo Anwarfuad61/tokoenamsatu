@@ -1,0 +1,209 @@
+<header class="header">
+    <div class="logo">
+        <a href="/" aria-label="Beranda Toko Enam Satu">
+            <img src="/tko.png" alt="Logo Toko Enam Satu" width="50" height="50">
+        </a>
+    </div>
+
+    <!-- NAV DESKTOP -->
+    <nav class="nav-desktop" aria-label="Navigasi utama">
+        <a href="/">Beranda</a>
+        <a href="/produk">Produk</a>
+        <a href="/tentang">Tentang</a>
+        <a href="/kontak">Kontak</a>
+        
+        <!-- Shopee Button Desktop -->
+        <a href="https://shopee.co.id/anwar676"
+           class="shopee-btn desktop-only" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           aria-label="Beli di Shopee"
+           title="Kunjungi Toko Kami di Shopee">
+            <i class="fab fa-shopify"></i>
+            <span>Shopee</span>
+        </a>
+    </nav>
+
+    <div class="header-right">
+        <!-- Shopee Button Mobile (Icon only) -->
+        <a href="https://shopee.co.id/anwar676" 
+           class="shopee-btn mobile-only" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           aria-label="Beli di Shopee"
+           title="Shopee">
+            <i class="fab fa-shopify"></i>
+        </a>
+        
+        <button class="toggle-darkmode" aria-label="Ubah tema gelap/terang" title="Ubah tema">
+            🌓
+        </button>
+
+        <button class="hamburger" aria-label="Toggle menu mobile" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </div>
+</header>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu" tabindex="-1">
+    <button class="menu-close" aria-label="Tutup menu" tabindex="0">
+        ✕
+    </button>
+
+    <nav class="mobile-nav" aria-label="Navigasi mobile">
+        <a href="/">Beranda</a>
+        <a href="/produk">Produk</a>
+        <a href="/tentang">Tentang</a>
+        <a href="/kontak">Kontak</a>
+        
+        <!-- Shopee Link in Mobile Menu -->
+        <a href="https://shopee.co.id/anwar676" 
+           class="shopee-menu-link" 
+           target="_blank" 
+           rel="noopener noreferrer">
+            <i class="fab fa-shopify"></i>
+            Beli di Shopee
+        </a>
+    </nav>
+</div>
+
+<div class="menu-overlay" id="menuOverlay"></div>
+
+<!-- IMPROVED FALLBACK SCRIPT -->
+<script>
+    // Fallback hanya jika global.js benar-benar tidak ada
+    (function() {
+        // Tunggu sebentar untuk global.js load
+        setTimeout(function() {
+            if (typeof toggleMobileMenu === 'undefined') {
+                console.log('Global.js not loaded, using fallback menu');
+                
+                const hamburger = document.querySelector('.hamburger');
+                const menu = document.getElementById('mobileMenu');
+                const overlay = document.getElementById('menuOverlay');
+                const closeBtn = document.querySelector('.menu-close');
+                
+                if (!hamburger || !menu || !overlay) return;
+                
+                let isOpen = false;
+                
+                function toggleMenu() {
+                    isOpen = !isOpen;
+                    
+                    // Update accessibility attributes
+                    hamburger.setAttribute('aria-expanded', isOpen);
+                    
+                    if (isOpen) {
+                        // Open menu
+                        menu.classList.add('active');
+                        overlay.classList.add('active');
+                        hamburger.classList.add('active');
+                        document.body.classList.add('menu-open');
+                        document.body.style.overflow = 'hidden';
+                        
+                        // Focus management untuk aksesibilitas
+                        setTimeout(() => {
+                            closeBtn?.focus();
+                        }, 100);
+                    } else {
+                        // Close menu
+                        closeMenu();
+                    }
+                }
+                
+                function closeMenu() {
+                    menu.classList.remove('active');
+                    overlay.classList.remove('active');
+                    hamburger.classList.remove('active');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                    document.body.classList.remove('menu-open');
+                    document.body.style.overflow = '';
+                    
+                    // Return focus to hamburger
+                    setTimeout(() => {
+                        hamburger.focus();
+                    }, 100);
+                    
+                    isOpen = false;
+                }
+                
+                // Event listeners
+                hamburger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    toggleMenu();
+                });
+                
+                overlay.addEventListener('click', closeMenu);
+                if (closeBtn) closeBtn.addEventListener('click', closeMenu);
+                
+                // Keyboard navigation
+                hamburger.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleMenu();
+                    }
+                });
+                
+                if (closeBtn) {
+                    closeBtn.addEventListener('keydown', function(e) {
+                        if (e.key === 'Escape') {
+                            closeMenu();
+                        }
+                    });
+                }
+                
+                // Close menu when clicking links
+                document.querySelectorAll('.mobile-menu a').forEach(link => {
+                    link.addEventListener('click', function(e) {
+                        closeMenu();
+                        // Optional: delay navigation for animation
+                        if (this.getAttribute('href').startsWith('http') || 
+                            this.getAttribute('href').startsWith('/')) {
+                            e.preventDefault();
+                            setTimeout(() => {
+                                window.location.href = this.getAttribute('href');
+                            }, 300);
+                        }
+                    });
+                });
+                
+                // Close on escape key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && isOpen) {
+                        closeMenu();
+                    }
+                });
+                
+                // Trap focus inside menu when open
+                menu.addEventListener('keydown', function(e) {
+                    if (!isOpen) return;
+                    
+                    const focusableElements = menu.querySelectorAll(
+                        'a[href], button, input, textarea, select, [tabindex]:not([tabindex="-1"])'
+                    );
+                    const firstFocusable = focusableElements[0];
+                    const lastFocusable = focusableElements[focusableElements.length - 1];
+                    
+                    if (e.key === 'Tab') {
+                        if (e.shiftKey) {
+                            // Shift + Tab
+                            if (document.activeElement === firstFocusable) {
+                                e.preventDefault();
+                                lastFocusable.focus();
+                            }
+                        } else {
+                            // Tab
+                            if (document.activeElement === lastFocusable) {
+                                e.preventDefault();
+                                firstFocusable.focus();
+                            }
+                        }
+                    }
+                });
+            }
+        }, 1500); // Tunggu 1.5 detik sebelum fallback
+    })();
+</script>

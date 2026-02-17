@@ -1,0 +1,506 @@
+
+/* HEADER */
+.header {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.98);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+[data-theme="dark"] .header {
+  background: rgba(17, 24, 39, 0.95);
+  border-bottom: 1px solid var(--border);
+}
+.logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+/* Logo */
+.logo img {
+  height: 45px;
+  width: auto;
+  transition: transform var(--transition-normal);
+  filter: brightness(1);
+}
+
+[data-theme="dark"] .logo img {
+  filter: brightness(1.2); /* Sedikit lebih terang di dark mode */
+}
+
+.logo img:hover {
+    transform: scale(1.05);
+}
+
+/* HAMBURGER BUTTON - FIX VISIBILITY */
+.hamburger {
+    display: none;
+    position: relative;
+    z-index: 1100;
+    width: 50px;
+    height: 50px;
+    background: var(--primary);
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+    box-shadow: var(--shadow);
+}
+[data-theme="dark"] .hamburger {
+  background: var(--primary);
+}
+
+/* Hamburger lines - MAKE SURE VISIBLE */
+.hamburger span {
+    display: block;
+    width: 24px;
+    height: 3px;
+    background: white !important; /* Force white color */
+    border-radius: 3px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+    position: relative;
+}
+
+/* Hamburger hover effect */
+.hamburger:hover {
+    background: #0055aa;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 102, 204, 0.2);
+}
+
+/* Hamburger animation when active */
+.hamburger.active {
+    background: #ff4444;
+    transform: rotate(180deg);
+}
+
+.hamburger.active span:nth-child(1) {
+    transform: translateY(9px) rotate(45deg);
+    background: white !important;
+}
+
+.hamburger.active span:nth-child(2) {
+    opacity: 0;
+    transform: scaleX(0);
+}
+
+.hamburger.active span:nth-child(3) {
+    transform: translateY(-9px) rotate(-45deg);
+    background: white !important;
+}
+
+/* NAV DESKTOP */
+.nav-desktop {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+}
+
+.nav-desktop a {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-weight: 600;
+    font-size: 16px;
+    text-decoration: none;
+    color: var(--text);
+    padding: 8px 0;
+    position: relative;
+    transition: color 0.2s ease;
+}
+
+.nav-desktop a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--primary), var(--accent));
+    transition: width 0.3s ease;
+    border-radius: 1px;
+}
+
+.nav-desktop a:hover {
+    color: var(--primary);
+}
+
+.nav-desktop a:hover::after,
+.nav-desktop a.active::after {
+    width: 100%;
+}
+
+/* HEADER RIGHT SECTION */
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* DARK MODE TOGGLE */
+.toggle-darkmode {
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    border: none;
+    background: var(--card);
+    color: var(--text);
+    font-size: 22px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: var(--shadow);
+}
+
+.toggle-darkmode:hover {
+    background: var(--primary);
+    color: white;
+    transform: rotate(15deg);
+}
+
+/* MOBILE MENU OVERLAY */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* MOBILE MENU - SLIDE IN ANIMATION */
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    right: -100%;
+    width: 85%;
+    max-width: 320px;
+    height: 100%;
+    background: var(--card);
+    z-index: 1000;
+    padding: 100px 28px 40px;
+    transition: right 0.4s ease;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.15);
+    border-left: 1px solid var(--border);
+    visibility: hidden;
+    opacity: 0;
+    transform: translateX(100%);
+}
+
+.mobile-menu.active {
+    right: 0;
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(0);
+}
+[data-theme="dark"] .mobile-menu {
+  border-left: 1px solid var(--border);
+}
+
+[data-theme="dark"] .mobile-menu a {
+  border-bottom: 1px solid var(--border);
+}
+/* Close button inside mobile menu */
+.menu-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 12px;
+    border: none;
+    background: #ff4444;
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 1001;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+    box-shadow: 0 4px 12px rgba(255, 68, 68, 0.2);
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+}
+
+
+@keyframes pulseClose {
+    0% { box-shadow: 0 4px 12px rgba(255, 68, 68, 0.2); }
+    50% { box-shadow: 0 4px 20px rgba(255, 68, 68, 0.4); }
+    100% { box-shadow: 0 4px 12px rgba(255, 68, 68, 0.2); }
+}
+.menu-close:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+    background: #ff3333;
+}
+.menu-close:hover {
+    background: #ff3333;
+    transform: rotate(90deg) scale(1.1);
+}
+
+.menu-close span {
+    display: none;
+}
+
+/* Mobile menu links with animation */
+.mobile-menu a {
+    display: block;
+    padding: 18px 0;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    transition: all 0.3s ease;
+    border-radius: 8px;
+    margin: 5px 0;
+    padding-left: 15px;
+}
+
+/* Staggered animation for links */
+.mobile-menu.active a:nth-child(2) { animation: slideInRight 0.3s 0.1s forwards; }
+.mobile-menu.active a:nth-child(3) { animation: slideInRight 0.3s 0.2s forwards; }
+.mobile-menu.active a:nth-child(4) { animation: slideInRight 0.3s 0.3s forwards; }
+.mobile-menu.active a:nth-child(5) { animation: slideInRight 0.3s 0.4s forwards; }
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+.mobile-menu a:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 4px;
+    background-color: rgba(79, 70, 229, 0.1);
+}
+
+.mobile-menu a::before {
+    content: '';
+    position: absolute;
+    left: -100%;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(0, 102, 204, 0.1), transparent);
+    transition: left 0.5s ease;
+}
+
+.mobile-menu a:hover::before {
+    left: 100%;
+}
+
+.mobile-menu a:hover {
+    color: var(--primary);
+    padding-left: 12px;
+    border-bottom-color: var(--primary);
+}
+
+.mobile-menu a:last-child {
+    border-bottom: none;
+}
+
+/* Prevent scroll when menu is open */
+body.menu-open {
+    overflow: hidden !important;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+}
+/* Hamburger button focus state */
+.hamburger:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+/* Dark mode toggle focus */
+.toggle-darkmode:focus {
+    outline: 2px solid var(--primary);
+    outline-offset: 3px;
+}
+
+/* Skip to content link untuk aksesibilitas */
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 10px;
+    background: var(--primary);
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    z-index: 9999;
+    transition: top 0.3s;
+}
+
+.skip-to-content:focus {
+    top: 10px;
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+.nav-desktop .shopee-btn.desktop-only {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(90deg, #ee4d2d, #ff7337);
+    color: white !important;
+    padding: 10px 20px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    margin-left: 10px;
+    transition: all var(--transition-normal);
+    box-shadow: 0 4px 15px rgba(238, 77, 45, 0.3);
+    border: none;
+}
+
+.nav-desktop .shopee-btn.desktop-only:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(238, 77, 45, 0.4);
+    background: linear-gradient(90deg, #ff7337, #ee4d2d);
+}
+
+.nav-desktop .shopee-btn.desktop-only i {
+    font-size: 1.1rem;
+}
+
+/* Shopee Icon in Header Right (Mobile) */
+.header-right .shopee-btn.mobile-only {
+    display: none;
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(90deg, #ee4d2d, #ff7337);
+    border-radius: 50%;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all var(--transition-normal);
+    box-shadow: 0 4px 12px rgba(238, 77, 45, 0.3);
+}
+
+.header-right .shopee-btn.mobile-only:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 18px rgba(238, 77, 45, 0.4);
+}
+
+/* Shopee Link in Mobile Menu */
+.mobile-menu .shopee-menu-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: linear-gradient(90deg, #ee4d2d, #ff7337);
+    color: white !important;
+    padding: 16px 20px;
+    border-radius: 12px;
+    margin: 15px 0;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all var(--transition-normal);
+    box-shadow: 0 4px 15px rgba(238, 77, 45, 0.3);
+}
+
+.mobile-menu .shopee-menu-link:hover {
+    transform: translateX(5px);
+    box-shadow: 0 6px 20px rgba(238, 77, 45, 0.4);
+}
+
+.mobile-menu .shopee-menu-link i {
+    font-size: 1.3rem;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+    .header {
+        padding: 14px 20px;
+    }
+    
+    .logo img {
+        height: 40px;
+    }
+    
+    .nav-desktop {
+        display: none !important;
+    }
+    
+    .hamburger {
+        display: flex !important;
+    }
+    
+    .toggle-darkmode {
+        width: 45px;
+        height: 45px;
+        font-size: 20px;
+    }
+    
+    .mobile-menu {
+        width: 90%;
+        padding: 90px 24px 40px;
+    }
+     .nav-desktop .shopee-btn.desktop-only {
+        display: none;
+    }
+    
+    .header-right .shopee-btn.mobile-only {
+        display: flex;
+    }
+
+}
+
+@media (min-width: 769px) {
+    .mobile-menu,
+    .menu-overlay {
+        display: none !important;
+    }
+    
+    .hamburger {
+        display: none !important;
+    }
+    .header-right .shopee-btn.mobile-only {
+        display: none;
+    }
+}
